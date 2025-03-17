@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: nginx-proxy
+spec:
+  replicas: 3 
+  selector: 
+    matchLabels:
+      app: nginx-proxy
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy
+    spec:
+      initContainers:
+      - name: wait-for-user-management-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z user-management-service 3000; do echo waiting for user-management-service; sleep 2; done;']
+      - name: wait-for-training-session-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z training-session-service 3001; do echo waiting for training-session-service; sleep 2; done;']
+      - name: wait-for-workout-recommendation-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z workout-recommendation-service 8000; do echo waiting for workout-recommendation-service; sleep 2; done;']
+      - name: wait-for-user-db-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z user-db-service 5432; do echo waiting for user-db-service; sleep 2; done;']
+      - name: wait-for-session-db-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z session-db-service 5433; do echo waiting for session-db-service; sleep 2; done;']
+      containers:
+      - name: nginx
+        image: nginx:latest
+        imagePullPolicy: Never
+        command: [ "nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf" ]
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config

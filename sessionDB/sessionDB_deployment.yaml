@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: session-db
+  template:
+    metadata:
+      labels:
+        app: session-db
+    spec:
+      containers:
+        - name: session-db
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: session-db-secret
+                  key: SESSION_DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: session-db-secret
+                  key: SESSION_DB_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: session-db-secret
+                  key: SESSION_DB_NAME

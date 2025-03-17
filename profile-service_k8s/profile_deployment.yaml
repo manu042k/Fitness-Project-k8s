@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: profile-deployment
+spec:
+  replicas: 3 
+  selector: 
+    matchLabels:
+      app: profile-deployment
+  template:
+    metadata:
+      labels:
+        app: profile-deployment
+    spec:
+      containers:
+      - name: profile-service
+        image: santhoshh27/cloud-microservices:profile-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80

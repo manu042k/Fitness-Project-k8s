@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: trainingsessiondeployment
+spec:
+  replicas: 3 
+  selector: 
+    matchLabels:
+      app: trainingsessiondeployment
+  template:
+    metadata:
+      labels:
+        app: trainingsessiondeployment
+    spec:
+      containers:
+      - name: cloud-microserivces-main-training-session-management-service
+        image: santhoshh27/cloud-microservices:training-session-management-service
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: db-secret
+        ports:
+        - containerPort: 3001

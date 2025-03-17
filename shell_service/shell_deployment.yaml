@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shell-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shell-deployment
+  template:
+    metadata:
+      labels:
+        app: shell-deployment
+    spec:
+      initContainers:
+      - name: wait-for-profile-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z profile-service 4202; do echo waiting for profile-service; sleep 2; done;']
+        # This waits for the profile-service on port 4202 to be available before starting the shell-service
+      - name: wait-for-trainee-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z trainee-service 4203; do echo waiting for trainee-service; sleep 2; done;']
+        # This waits for the trainee-service on port 4203 to be available
+      - name: wait-for-trainer-service
+        image: busybox
+        command: ['sh', '-c', 'until nc -z trainer-service 4204; do echo waiting for trainer-service; sleep 2; done;']
+        # This waits for the trainer-service on port 4204 to be available
+      containers:
+      - name: cloud-microserivces-main-shell-service
+        image: santhoshh27/cloud-microservices:shell-service
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80

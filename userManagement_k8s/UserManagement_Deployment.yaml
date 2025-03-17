@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment  #Deployment, service, pod different kinds
+metadata:
+  name: usermanagementdeployment  #name of the deployment
+spec:
+  replicas: 3 #how many replicas pods should be running
+  selector: 
+    matchLabels:
+      app: usermanagementdeployment
+  template:
+    metadata:
+      labels:
+        app: usermanagementdeployment
+    spec:
+      containers:
+      - name: cloud-microserivces-main-user-management-service
+        image: santhoshh27/cloud-microservices:user-management-service
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: usermanagement-secret
+        ports:
+        - containerPort: 3000

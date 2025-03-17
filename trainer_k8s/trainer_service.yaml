@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: trainer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: trainer-deployment
+  ports:
+    - protocol: TCP
+      port: 4204
+      targetPort: 80
+      nodePort: 30004
