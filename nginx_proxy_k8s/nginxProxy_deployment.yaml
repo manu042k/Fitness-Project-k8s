@@ -31,7 +31,7 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         command: [ "nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf" ]
         ports:
         - containerPort: 80

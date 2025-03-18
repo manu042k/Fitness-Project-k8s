@@ -1,10 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment 
+kind: Deployment
 metadata:
   name: workoutrecommendationdeployment
 spec:
-  replicas: 3 
-  selector: 
+  replicas: 3
+  selector:
     matchLabels:
       app: workoutrecommendationdeployment
   template:
@@ -13,13 +13,13 @@ spec:
         app: workoutrecommendationdeployment
     spec:
       containers:
-      - name: cloud-microserivces-main-workout-recommendation-service
-        image: cloud-microserivces-main-workout-recommendation-service:latest
-        imagePullPolicy: Never
-        envFrom:
-          - configMapRef: 
-              name: workout-config
-          - secretRef:
-              name: groq-secret
-        ports:
-        - containerPort: 8000
+        - name: cloud-microserivces-main-workout-recommendation-service
+          image: santhoshh27/cloud-microservices:workout-recommendation-service
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: workout-config
+            - secretRef:
+                name: groq-secret
+          ports:
+            - containerPort: 8000
