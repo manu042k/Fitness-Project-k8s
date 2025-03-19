@@ -9,7 +9,11 @@ echo "Starting Kubernetes deployment for Fitness Project..."
 # echo "Creating namespace..."
 # kubectl create namespace fitness-app --dry-run=client -o yaml | kubectl apply -f -
 # kubectl config set-context --current --namespace=fitness-app
-
+echo "Creating configmap from init.sql..."
+cd userDB
+kubectl create configmap init-sql-config --from-file=init.sql
+cd ..
+echo "✅ Configmap created successfully"
 echo "Applying secrets..."
 kubectl apply -f secrets/session_secret.yaml
 kubectl apply -f secrets/DB_secret.yaml
@@ -20,7 +24,6 @@ echo "✅ Secrets applied successfully"
 echo "Applying persistent volume claims..."
 kubectl apply -f sessionDB/sessionDB_pvc.yaml
 kubectl apply -f userDB/userDB_pvc.yaml
-kubectl create configmap init-sql-config --from-file=init.sql
 echo "✅ Persistent volume claims applied successfully"
 
 echo "Deploying databases..."
